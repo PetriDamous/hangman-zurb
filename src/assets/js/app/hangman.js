@@ -36,11 +36,23 @@ Hangman.prototype.getGuess = function (guess) {
 }
 
 Hangman.prototype.gameStatus = function () {
+    // Checks for finish status
+    const chkChar = [];
 
-    const finish = this.word.every( (letter) => this.guessLetters.includes(letter) );
+    this.guessLetters.forEach((letter) => {
+        if (this.word.includes(letter)) {
+            chkChar.push(letter);
+        }
+        
+    });
+
+    const chkCorrect = () => { 
+        console.log(this.word.join('') === chkChar.join(''))
+        return this.word.join('') === chkChar.join(''); 
+    }    
 
     // Changes status    
-    if (finish) {
+    if (chkCorrect()) {
         this.status = 'finished'
         console.log(this.status)
     } else if (this.tries <= 0) {
