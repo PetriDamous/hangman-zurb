@@ -20,19 +20,24 @@ Hangman.prototype.getPuzzle = function () {
 }
 
 Hangman.prototype.getGuess = function (guess) {
-    guess.toLowerCase();
 
-    // Could also use indexOf
-    const isUnique = !this.guessLetters.includes(guess);
-    const isBadGuess = !this.word.includes(guess);
+    if (this.status === 'playing') {
+        guess.toLowerCase();
 
-    if (isUnique) {
-        this.guessLetters.push(guess);
+        // Could also use indexOf
+        const isUnique = !this.guessLetters.includes(guess);
+        const isBadGuess = !this.word.includes(guess);
+    
+        if (isUnique) {
+            this.guessLetters.push(guess);
+        }
+    
+        if (isUnique && isBadGuess) {
+            this.tries--;
+        }
     }
 
-    if (isUnique && isBadGuess) {
-        this.tries--;
-    }
+    this.gameStatus();
 }
 
 Hangman.prototype.gameStatus = function () {
@@ -46,10 +51,7 @@ Hangman.prototype.gameStatus = function () {
         
     });
 
-    const chkCorrect = () => { 
-        console.log(this.word.join('') === chkChar.join(''))
-        return this.word.join('') === chkChar.join(''); 
-    }    
+    const chkCorrect = () => this.word.join('') === chkChar.join('');     
 
     // Changes status    
     if (chkCorrect()) {
@@ -65,21 +67,36 @@ Hangman.prototype.gameStatus = function () {
     
 }
 
+Hangman.prototype.chkStatus = function () {
+    if (this.status === 'playing') {
+        return `Guesses left: ${this.tries}`;
+    } else if (this.status === 'failed') {
+        return `Nice try! The word was "${this.word.join('')}"`;
+    } else {
+        return 'Great work! You guessed the word';
+    }
+}
+
 Hangman.prototype.renderPuzzle = function () {
     // Puzzle area
     const puzzleArea = document.getElementById('puzzle-area');
 
     puzzleArea.innerHTML = '';
 
-    // Creates puzzle element
+    // Renders puzzle element
     const displaypuzzle = document.createElement('div');
     displaypuzzle.textContent = this.getPuzzle();
     puzzleArea.appendChild(displaypuzzle);
 
-    // Creates guess counter
+    // Renders guess counter
     const displayGuess = document.createElement('div');
     displayGuess.textContent = this.tries;
     puzzleArea.appendChild(displayGuess);
+
+    // Renders status
+    const displayStat = document.createElement('div');
+    displayStat.textContent = this.chkStatus();
+    puzzleArea.appendChild(displayStat);
 
 }
 
