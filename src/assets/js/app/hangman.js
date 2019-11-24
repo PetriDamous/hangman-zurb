@@ -6,7 +6,7 @@ class Hangman {
         this.status = 'playing';
     }
 
-    getPuzzle() {
+    get getPuzzle() {
         let puzzle = '';
 
         this.word.forEach((letter) => {
@@ -38,13 +38,12 @@ class Hangman {
         }
     
         this.gameStatus();
-
     }
 
     gameStatus() {
         // Checks for finish status
-        const chkChar = [];
-
+        const chkChar = this.word.filter((letter) => letter === ' ');
+        
         this.guessLetters.forEach((letter) => {
             if (this.word.includes(letter)) {
                 chkChar.push(letter);
@@ -52,7 +51,8 @@ class Hangman {
 
         });
 
-        const chkCorrect = () => this.word.join('') === chkChar.join('');     
+        // const chkCorrect = () => this.word.sort().join('') === chkChar.sort().join(''); 
+        const chkCorrect = () => this.word.every((letter) => chkChar.includes(letter) )    
 
         // Changes status    
         if (chkCorrect()) {
@@ -67,7 +67,7 @@ class Hangman {
         }
     }
 
-    chkStatus() {
+    get chkStatus() {
         if (this.status === 'playing') {
             return `Guesses left: ${this.tries}`;
         } else if (this.status === 'failed') {
@@ -85,7 +85,7 @@ class Hangman {
 
         // Renders puzzle element
         const displaypuzzle = document.createElement('div');
-        displaypuzzle.textContent = this.getPuzzle();
+        displaypuzzle.textContent = this.getPuzzle;
         puzzleArea.appendChild(displaypuzzle);
 
         // Renders guess counter
@@ -95,19 +95,18 @@ class Hangman {
 
         // Renders status
         const displayStat = document.createElement('div');
-        displayStat.textContent = this.chkStatus();
+        displayStat.textContent = this.chkStatus;
         puzzleArea.appendChild(displayStat);
     }
 }
 
-const game1 = new Hangman('Dog', 2);
+const game1 = new Hangman('Dog Man X', 2);
 
 game1.renderPuzzle();
 
 window.addEventListener('keypress', function(e) {
     const guess = e.key;
-    game1.getGuess(guess);
-    game1.gameStatus();
+    game1.getGuess(guess);    
     game1.renderPuzzle();
 });
 
